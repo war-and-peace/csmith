@@ -87,9 +87,10 @@ FunctionInvocation::make_random(bool is_std_func,
 	// If we are looking for a program-defined function, try to find one.
 	if (!is_std_func) {
 		Function* callee = NULL;
-		if (pure_rnd_flipcoin(50)) {
-			callee = Function::choose_func(get_all_functions(), cg_context, type, qfer);
-		}
+        //TODO: Turn this on and add topological sorting
+//		if (pure_rnd_flipcoin(50)) {
+//			callee = Function::choose_func(get_all_functions(), cg_context, type, qfer);
+//		}
 		if (callee != NULL) {
 			FunctionInvocationUser *fiu = new FunctionInvocationUser(callee, true, NULL);
 			fiu->build_invocation(callee, cg_context);
