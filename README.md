@@ -13,6 +13,22 @@ write them, feel free to give Csmith a try.
 Csmith outputs C programs free of undefined behaviors (believe us, that's
 not trivial), and the statistics of each generated program.
 
+## Build & Run
+You can build the Csmith library using CMake and any C++ compiler (GCC, Clang, MSVC).
+For building you can use the following command on Linux. But first it is recommended to create a new folder for storing bulid files.
+```
+mkdir build && cd build && cmake . && make
+```
+
+After building the library, you can use this command to generate C-- code examples:
+```
+./csmith -o output.c --concise --no-global-variables --no-arrays --no-safe-math --no-unions --no-structs --no-volatiles --no-pointers --max-funcs 3 --max-expr-complexity 2 --no-embedded-assigns --no-comma-operators --no-argc --no-builtins --no-pre-incr-operator --no-pre-decr-operator --no-post-incr-operator --no-post-decr-operator --no-longlong --no-unary-plus-operator --probability-configuration probs.txt --no-force-globals-static --max-funcs 1 --no-consts
+```
+
+The output will be written to `output.c` file.
+
+**Note:** `probs.txt` file is located in the root folder of the repository
+
 ## Install Csmith
 
 You can install Csmith from tarballs downloaded from [here (coming soon)](doc/releases.md),
