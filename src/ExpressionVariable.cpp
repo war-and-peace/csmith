@@ -55,7 +55,7 @@
  *
  */
 ExpressionVariable *
-ExpressionVariable::make_random(CGContext &cg_context, const Type* type, const CVQualifiers* qfer, bool as_param, bool as_return)
+ExpressionVariable::make_random(std::uint32_t expId, CGContext &cg_context, const Type* type, const CVQualifiers* qfer, bool as_param, bool as_return)
 {
 	DEPTH_GUARD_BY_TYPE_RETURN(dtExpressionVariable, NULL);
 	Function *curr_func = cg_context.get_current_func();

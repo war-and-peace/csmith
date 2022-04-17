@@ -47,7 +47,7 @@ class ExpressionVariable : public Expression
 {
 public:
 	// Factory method.
-	static ExpressionVariable *make_random(CGContext &cg_context, const Type* type, const CVQualifiers* qfer=0, bool as_param=false, bool as_return=false);
+	static ExpressionVariable *make_random(std::uint32_t expId, CGContext &cg_context, const Type* type, const CVQualifiers* qfer=0, bool as_param=false, bool as_return=false);
 
 	explicit ExpressionVariable(const Variable &v);
 

@@ -303,7 +303,7 @@ Statement::make_random(CGContext &cg_context,
 		s = StatementIf::make_random(cg_context);
 		break;
 	case eInvoke:
-		s = StatementExpr::make_random(cg_context);
+		s = StatementExpr::make_random(0, cg_context);
 		break;
 	case eReturn:
 		s = StatementReturn::make_random(cg_context);

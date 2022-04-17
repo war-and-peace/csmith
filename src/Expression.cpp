@@ -156,7 +156,8 @@ Expression::indented_output(std::ostream &out, int indent) const
  *
  */
 Expression *
-Expression::make_random(CGContext &cg_context, const Type* type, const CVQualifiers* qfer, bool no_func, bool no_const, enum eTermType tt)
+Expression::make_random(std::uint32_t expId, CGContext &cg_context, const Type *type, const CVQualifiers *qfer,
+                        bool no_func, bool no_const, enum eTermType tt)
 {
 	DEPTH_GUARD_BY_TYPE_RETURN_WITH_FLAG(dtExpression, tt, NULL);
 	Expression *e = 0;
@@ -173,7 +174,7 @@ Expression::make_random(CGContext &cg_context, const Type* type, const CVQualifi
 	// if no term type is provided, choose a random term type with restrictions
 	if (tt == MAX_TERM_TYPES) {
 		VectorFilter filter(&Expression::exprTable_);
-		if (no_func ||
+		if (no_func || expId > 1 ||
 			(!CGOptions::return_structs() && type->eType == eStruct) ||
 			(!CGOptions::return_unions() && type->eType == eUnion)) {
 			filter.add(eFunction);
@@ -205,11 +206,11 @@ Expression::make_random(CGContext &cg_context, const Type* type, const CVQualifi
 		break;
 	case eVariable:
         ttype = "variable";
-		e = ExpressionVariable::make_random(cg_context, type, qfer);
+		e = ExpressionVariable::make_random(expId, cg_context, type, qfer);
 		break;
 	case eFunction:
         ttype = "function";
-		e = ExpressionFuncall::make_random(cg_context, type, qfer);
+		e = ExpressionFuncall::make_random(expId, cg_context, type, qfer);
 		break;
 	case eAssignment:
         ttype = "assignment";
@@ -271,17 +272,20 @@ Expression::make_random_param(CGContext &cg_context, const Type* type, const CVQ
 	// if a term type is provided, no need to choose random term type
 	if (tt == MAX_TERM_TYPES) {
 		VectorFilter filter(&Expression::paramTable_);
-		filter.add(eConstant);   // don't call functions with constant parameters because it is not interesting
-		if ((!CGOptions::return_structs() && type->eType == eStruct) ||
-			(!CGOptions::return_unions() && type->eType == eUnion)) {
-			filter.add(eFunction);
-		}
-		if (type->is_const_struct_union()) {
-			filter.add(eAssignment);
-		}
-		if (cg_context.expr_depth + 2 > CGOptions::max_expr_depth()) {
-			filter.add(eFunction).add(eAssignment).add(eCommaExpr);
-		}
+//		filter.add(eConstant);   // don't call functions with constant parameters because it is not interesting
+        filter.add(eFunction);
+        filter.add(eAssignment);
+        filter.add(eCommaExpr);
+//		if ((!CGOptions::return_structs() && type->eType == eStruct) ||
+//			(!CGOptions::return_unions() && type->eType == eUnion)) {
+//			filter.add(eFunction);
+//		}
+//		if (type->is_const_struct_union()) {
+//			filter.add(eAssignment);
+//		}
+//		if (cg_context.expr_depth + 2 > CGOptions::max_expr_depth()) {
+//			filter.add(eFunction).add(eAssignment).add(eCommaExpr);
+//		}
 		tt = ExpressionTypeProbability(&filter);
 	}
 
@@ -294,10 +298,10 @@ Expression::make_random_param(CGContext &cg_context, const Type* type, const CVQ
 		e = Constant::make_random(type);
 		break;
 	case eVariable:
-		e = ExpressionVariable::make_random(cg_context, type, qfer, true);
+		e = ExpressionVariable::make_random(0, cg_context, type, qfer, true);
 		break;
 	case eFunction:
-		e = ExpressionFuncall::make_random(cg_context, type, qfer);
+		e = ExpressionFuncall::make_random(0, cg_context, type, qfer);
 		break;
 	case eAssignment:
 		e = ExpressionAssign::make_random(cg_context, type, qfer);

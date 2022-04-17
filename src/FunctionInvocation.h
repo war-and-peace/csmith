@@ -114,16 +114,17 @@ public:
 
 	virtual FunctionInvocation *clone() const = 0;
 
-	static FunctionInvocation *make_random(bool,
+	static FunctionInvocation *make_random(std::uint32_t expId,
+                                           bool,
 										   CGContext &cg_context,
                                            const Type* type,
 										   const CVQualifiers* qfer);
 	static FunctionInvocation *make_random(Function *target,
 										   CGContext &cg_context);
 
-	static FunctionInvocation *make_random_unary(CGContext &cg_context, const Type* type);
+	static FunctionInvocation *make_random_unary(std::uint32_t expId, CGContext &cg_context, const Type* type);
 
-	static FunctionInvocation *make_random_binary(CGContext &cg_context, const Type* type);
+	static FunctionInvocation *make_random_binary(std::uint32_t expId, CGContext &cg_context, const Type* type);
 
 	static FunctionInvocation * make_random_binary_ptr_comparison(CGContext &cg_context);
 

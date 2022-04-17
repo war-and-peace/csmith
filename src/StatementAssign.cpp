@@ -145,7 +145,7 @@ StatementAssign::make_random(CGContext &cg_context, const Type* type, const CVQu
 		if (type->is_volatile_struct_union())
 			return NULL;
 
-		e = Expression::make_random(rhs_cg_context, type, qf);
+		e = Expression::make_random(0, rhs_cg_context, type, qf);
 		ERROR_GUARD_AND_DEL1(NULL, e);
 		if (!qf) {
 			qfer = e->get_qualifiers();
@@ -166,7 +166,7 @@ StatementAssign::make_random(CGContext &cg_context, const Type* type, const CVQu
 			qfer.set_volatile(false);
 	}
 	else {
-		e = Expression::make_random(rhs_cg_context, type, qf);
+        e = Expression::make_random(0, rhs_cg_context, type, qf);
 		ERROR_GUARD_AND_DEL1(NULL, e);
 		if (!qf) {
 			qfer = e->get_qualifiers();
@@ -530,7 +530,8 @@ StatementAssign::OutputAsExpr(std::ostream &out) const
 				expr.Output(out);
 			}
 			else {
-				output_op(out);
+                out << "=";
+//				output_op(out);
 				out << " ";
 				expr.Output(out);
 			}

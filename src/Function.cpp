@@ -935,7 +935,7 @@ OutputFunctions(std::ostream &out)
 	outputln(out);
 	outputln(out);
 	output_comment_line(out, "--- FUNCTIONS ---");
-	for_each(FuncList.begin(), FuncList.end(),
+	for_each(FuncList.rbegin(), FuncList.rend(),
 			 std::bind2nd(std::ptr_fun(OutputFunction), &out));
 }
 
