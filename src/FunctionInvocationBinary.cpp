@@ -315,6 +315,22 @@ FunctionInvocationBinary::get_binop_string(eBinaryOps bop)
 	return op_string;
 }
 
+unsigned long sizeInBytes(SafeOpSize op) {
+    switch (op) {
+        case (sInt8):
+            return 1;
+        case (sInt16):
+            return 2;
+        case (sInt32):
+            return 4;
+        case (sInt64):
+            return 8;
+        case (sFloat):
+            return 4;
+    }
+
+}
+
 /*
  *
  */
@@ -364,11 +380,20 @@ FunctionInvocationBinary::Output(std::ostream &out) const
 					break;
 				}
 			}
-			need_cast = true;
+			//need_cast = true;
 			// fallthrough!
 
 		default:
 			// explicit type casting for op1
+
+            if (op_flags->get_op1() != param_value[0]->get_type().is_signed()){
+                need_cast = true;
+            }
+
+            if (param_value[0]->get_type().SizeInBytes() > sizeInBytes(op_flags->get_op_size())){
+                need_cast = true;
+            }
+
 			if (need_cast) {
 				out << "(";
 				op_flags->OutputSize(out);
@@ -379,6 +404,15 @@ FunctionInvocationBinary::Output(std::ostream &out) const
 			OutputStandardFuncName(eFunc, out);
 			out << " ";
 			// explicit type casting for op2
+            need_cast = false;
+            if (op_flags->get_op1() != param_value[1]->get_type().is_signed()){
+                need_cast = true;
+            }
+
+            if (param_value[1]->get_type().SizeInBytes() > sizeInBytes(op_flags->get_op_size())){
+                need_cast = true;
+            }
+
 			if (need_cast) {
 				out << "(";
 				op_flags->OutputSize(out);

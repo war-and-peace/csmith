@@ -74,6 +74,7 @@ public:
 	virtual bool get_depth_protect(void) { return depth_protect; }
 
 	virtual void Output(std::ostream &out, FactMgr* fm, int indent=0) const;
+    void Output(std::stringstream &out, FactMgr* fm, int indent=0) const;
 
 	void OutputTmpVariableList(std::ostream &out, int indent) const;
 

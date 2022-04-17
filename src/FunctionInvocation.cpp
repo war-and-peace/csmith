@@ -203,6 +203,10 @@ FunctionInvocation::make_random_binary(CGContext &cg_context, const Type* type)
 	ERROR_GUARD_AND_DEL1(NULL, fi);
 	Expression *rhs = 0;
 
+    std::cerr << "lhs expr: ";
+    lhs->Output(std::cerr);
+    std::cerr << std::endl;
+
 	cg_context.merge_param_context(lhs_cg_context, true);
 	FactMgr* fm = get_fact_mgr(&cg_context);
 	vector<const Fact*> facts_copy = fm->global_facts;
@@ -244,12 +248,16 @@ FunctionInvocation::make_random_binary(CGContext &cg_context, const Type* type)
 				!lhs_type->is_float() && !rhs_type->is_float()) {
 				VectorFilter f;
 				f.add(eMod).add(eDiv).add(eLShift).add(eRShift);
-				op = (eBinaryOps)(rnd_upto(MAX_BINARY_OP, &f));
+				op = (eBinaryOps)(rnd_upto(4, &f));
 				fi->set_operation(op);
 			}
 		}
 		cg_context.merge_param_context(rhs_cg_context, true);
 	}
+
+    std::cerr << "rhs expr: ";
+    rhs->Output(std::cerr);
+    std::cerr << std::endl;
 
 	ERROR_GUARD_AND_DEL2(NULL, fi, lhs);
 	if (!BinaryOpWorksForFloat(op)) {

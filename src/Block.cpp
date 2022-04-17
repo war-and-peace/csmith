@@ -805,6 +805,14 @@ Block::post_creation_analysis(CGContext& cg_context, const Effect& pre_effect)
 	}
 }
 
+void Block::Output(stringstream &out, FactMgr *fm, int indent) const {
+	if (CGOptions::math_notmp())
+		OutputTmpVariableList(out, indent);
+
+	OutputVariableList(local_vars, out, indent);
+	OutputStatementList(stms, out, fm, indent);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 // Local Variables:

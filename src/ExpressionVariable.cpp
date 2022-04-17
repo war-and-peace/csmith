@@ -218,6 +218,7 @@ ExpressionVariable::Output(std::ostream &out) const
 		assert(indirect_level == -1);
 		out << "&";
     }
+
 	var.Output(out);
     if (indirect_level > 0) {
         out << ")";

@@ -79,7 +79,7 @@ DefaultProgramGenerator::get_count_prefix(const std::string &)
 void
 DefaultProgramGenerator::goGenerator()
 {
-	output_mgr_->OutputHeader(argc_, argv_, seed_);
+//	output_mgr_->OutputHeader(argc_, argv_, seed_);
 
 	GenerateAllTypes();
 	GenerateFunctions();

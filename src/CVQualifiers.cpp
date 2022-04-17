@@ -587,12 +587,12 @@ CVQualifiers::output_qualified_type(const Type* t, std::ostream &out) const
 		if (i>0) {
 			out << "*";
 		}
-		if (is_consts[i]) {
-			if (!CGOptions::consts())
-				assert(0);
-			if (i > 0) out << " ";
-			out << "const ";
-		}
+//		if (is_consts[i]) {
+//			if (!CGOptions::consts())
+//				assert(0);
+//			if (i > 0) out << " ";
+//			out << "const ";
+//		}
 		if (is_volatiles[i]) {
 			if (!CGOptions::volatiles())
 				assert(0);

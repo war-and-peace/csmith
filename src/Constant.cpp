@@ -39,6 +39,7 @@
 #include <sstream>
 #include <cmath>
 #include <climits>
+#include <random>
 
 #include "CGContext.h"
 #include "Type.h"
@@ -51,6 +52,7 @@
 using namespace std;
 
 static string GenerateRandomConstant(const Type* type);
+static bool varType = true;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -59,7 +61,11 @@ static string GenerateRandomConstant(const Type* type);
  */
 
 ///////////////////////////////////////////////////////////////////////////////
+static std::random_device r;
 
+// Choose a random mean between 1 and 6
+static std::default_random_engine e1(r());
+static std::uniform_int_distribution<std::uint64_t> uniform_dist(0);
 /*
  *
  */
@@ -114,30 +120,82 @@ string HexToBinary(string val)
 static string
 GenerateRandomCharConstant(void)
 {
-	string ch;
-	if (CGOptions::binary_constant() && rnd_flipcoin(pBinaryConstProb)) {
-		ch = string("0b") + HexToBinary(RandomHexDigits(2));
-	} else if (CGOptions::ccomp() || !CGOptions::longlong())
-		ch = string("0x") + RandomHexDigits(2);
-	else
-		ch = string("0x") + RandomHexDigits(2) + "L";
-	return ch;
+    if (varType) {
+        varType = !varType;
+        return std::to_string(static_cast<std::int8_t>(uniform_dist(e1) % 256));
+    } else {
+        varType = !varType;
+        string ch;
+        if (CGOptions::binary_constant() && rnd_flipcoin(pBinaryConstProb)) {
+            ch = string("0b") + HexToBinary(RandomHexDigits(2));
+        } else if (CGOptions::ccomp() || !CGOptions::longlong())
+            ch = string("0x") + RandomHexDigits(2);
+        else
+            ch = string("0x") + RandomHexDigits(2) + "L";
+        return ch;
+    }
+}
+
+static string
+GenerateRandomUCharConstant(void)
+{
+    if (varType) {
+        varType = !varType;
+        return std::to_string(static_cast<std::uint8_t>(uniform_dist(e1) % 256));
+    } else {
+        varType = !varType;
+        string ch;
+        if (CGOptions::binary_constant() && rnd_flipcoin(pBinaryConstProb)) {
+            ch = string("0b") + HexToBinary(RandomHexDigits(2));
+        } else if (CGOptions::ccomp() || !CGOptions::longlong())
+            ch = string("0x") + RandomHexDigits(2);
+        else
+            ch = string("0x") + RandomHexDigits(2) + "L";
+        return ch;
+    }
 }
 
 // --------------------------------------------------------------
 static string
 GenerateRandomIntConstant(void)
 {
-	string val;
-	// Int constant - Max 8 Hex digits on 32-bit platforms
-	if (CGOptions::binary_constant() && rnd_flipcoin(pBinaryConstProb)) {
-		val = string("0b") + HexToBinary(RandomHexDigits( 8 ));
-	} else if (CGOptions::ccomp() || !CGOptions::longlong())
-		val = "0x" + RandomHexDigits( 8 );
-	else
-		val = "0x" + RandomHexDigits( 8 ) + "L";
+    if (varType) {
+        varType = !varType;
+        return std::to_string(static_cast<std::int32_t>(uniform_dist(e1) % ((1ul << 32) - 1)));
+    } else {
+        varType = !varType;
+        string val;
+        // Int constant - Max 8 Hex digits on 32-bit platforms
+        if (CGOptions::binary_constant() && rnd_flipcoin(pBinaryConstProb)) {
+            val = string("0b") + HexToBinary(RandomHexDigits(8));
+        } else if (CGOptions::ccomp() || !CGOptions::longlong())
+            val = "0x" + RandomHexDigits(8);
+        else
+            val = "0x" + RandomHexDigits(8) + "L";
 
-	return val;
+        return val;
+    }
+}
+
+static string
+GenerateRandomUIntConstant(void)
+{
+    if (varType) {
+        varType = !varType;
+        return std::to_string(static_cast<std::uint32_t>(uniform_dist(e1) % ((1ul << 32) - 1)));
+    } else {
+        varType = !varType;
+        string val;
+        // Int constant - Max 8 Hex digits on 32-bit platforms
+        if (CGOptions::binary_constant() && rnd_flipcoin(pBinaryConstProb)) {
+            val = string("0b") + HexToBinary(RandomHexDigits(8));
+        } else if (CGOptions::ccomp() || !CGOptions::longlong())
+            val = "0x" + RandomHexDigits(8);
+        else
+            val = "0x" + RandomHexDigits(8) + "L";
+
+        return val;
+    }
 }
 
 // --------------------------------------------------------------
@@ -156,44 +214,121 @@ GenerateRandomInt128Constant(void)
 static string
 GenerateRandomShortConstant(void)
 {
-	string val;
-	// Short constant - Max 4 Hex digits on 32-bit platforms
-	if (CGOptions::binary_constant() && rnd_flipcoin(pBinaryConstProb)) {
-                val = string("0b") + HexToBinary(RandomHexDigits( 4 ));
-	} else if (CGOptions::ccomp() || !CGOptions::longlong())
-		val = "0x" + RandomHexDigits( 4 );
-	else
-		val = "0x" + RandomHexDigits( 4 ) + "L";
+    if (varType) {
+        varType = !varType;
+        return std::to_string(static_cast<std::int16_t>(uniform_dist(e1) % ((1ul << 16) - 1)));
+    } else {
+        varType = !varType;
+        string val;
+        // Short constant - Max 4 Hex digits on 32-bit platforms
+        if (CGOptions::binary_constant() && rnd_flipcoin(pBinaryConstProb)) {
+            val = string("0b") + HexToBinary(RandomHexDigits(4));
+        } else if (CGOptions::ccomp() || !CGOptions::longlong())
+            val = "0x" + RandomHexDigits(4);
+        else
+            val = "0x" + RandomHexDigits(4) + "L";
 
-	return val;
+        return val;
+    }
+}
+
+static string
+GenerateRandomUShortConstant()
+{
+    if (varType) {
+        varType = !varType;
+        return std::to_string(static_cast<std::uint16_t>(uniform_dist(e1) % ((1ul << 16) - 1)));
+    } else {
+        varType = !varType;
+        string val;
+        // Short constant - Max 4 Hex digits on 32-bit platforms
+        if (CGOptions::binary_constant() && rnd_flipcoin(pBinaryConstProb)) {
+            val = string("0b") + HexToBinary(RandomHexDigits(4));
+        } else if (CGOptions::ccomp() || !CGOptions::longlong())
+            val = "0x" + RandomHexDigits(4);
+        else
+            val = "0x" + RandomHexDigits(4) + "L";
+
+        return val;
+    }
 }
 
 // --------------------------------------------------------------
 static string
 GenerateRandomLongConstant(void)
 {
-	string val;
-	// Long constant - Max 8 Hex digits on 32-bit platforms
-	if (CGOptions::binary_constant() && rnd_flipcoin(pBinaryConstProb)) {
-                val = string("0b") + HexToBinary(RandomHexDigits( 8 ));
-	} else if (!CGOptions::longlong())
-		val = "0x" + RandomHexDigits( 8 );
-	else
-		val = "0x" + RandomHexDigits( 8 ) + "L";
-	return val;
+    if (varType) {
+        varType = !varType;
+        return std::to_string(static_cast<std::int32_t>(uniform_dist(e1) % ((1ul << 32) - 1))) + "L";
+    } else {
+        varType = !varType;
+        string val;
+        // Long constant - Max 8 Hex digits on 32-bit platforms
+        if (CGOptions::binary_constant() && rnd_flipcoin(pBinaryConstProb)) {
+            val = string("0b") + HexToBinary(RandomHexDigits(8));
+        } else if (!CGOptions::longlong())
+            val = "0x" + RandomHexDigits(8);
+        else
+            val = "0x" + RandomHexDigits(8) + "L";
+        return val;
+    }
+}
+
+static string
+GenerateRandomULongConstant(void)
+{
+    if (varType) {
+        varType = !varType;
+        return std::to_string(static_cast<std::uint32_t>(uniform_dist(e1) % ((1ul << 32) - 1))) + "UL";
+    } else {
+        varType = !varType;
+        string val;
+        // Long constant - Max 8 Hex digits on 32-bit platforms
+        if (CGOptions::binary_constant() && rnd_flipcoin(pBinaryConstProb)) {
+            val = string("0b") + HexToBinary(RandomHexDigits(8));
+        } else if (!CGOptions::longlong())
+            val = "0x" + RandomHexDigits(8);
+        else
+            val = "0x" + RandomHexDigits(8) + "L";
+        return val;
+    }
 }
 
 // --------------------------------------------------------------
 static string
 GenerateRandomLongLongConstant(void)
 {
-	string val;
-	// Long constant - Max 8 Hex digits on 32-bit platforms
-	if (CGOptions::binary_constant() && rnd_flipcoin(pBinaryConstProb)) {
-		val = string("0b") + HexToBinary(RandomHexDigits( 16 )) + "LL";
-	} else
-		val = "0x" + RandomHexDigits( 16 ) + "LL";
-	return val;
+    if (varType) {
+        varType = !varType;
+        return std::to_string(static_cast<std::int64_t>(uniform_dist(e1))) + "LL";
+    }else {
+        varType = !varType;
+        string val;
+        // Long constant - Max 8 Hex digits on 32-bit platforms
+        if (CGOptions::binary_constant() && rnd_flipcoin(pBinaryConstProb)) {
+            val = string("0b") + HexToBinary(RandomHexDigits(16)) + "LL";
+        } else
+            val = "0x" + RandomHexDigits(16) + "LL";
+        return val;
+    }
+}
+
+static string
+GenerateRandomULongLongConstant(void)
+{
+    if (varType) {
+        varType = !varType;
+        return std::to_string(static_cast<std::uint64_t>(uniform_dist(e1))) + "ULL";
+    }else {
+        varType = !varType;
+        string val;
+        // Long constant - Max 8 Hex digits on 32-bit platforms
+        if (CGOptions::binary_constant() && rnd_flipcoin(pBinaryConstProb)) {
+            val = string("0b") + HexToBinary(RandomHexDigits( 16 )) + "LL";
+        } else
+            val = "0x" + RandomHexDigits( 16 ) + "LL";
+        return val;
+    }
 }
 
 // --------------------------------------------------------------
@@ -357,7 +492,8 @@ GenerateRandomConstant(const Type* type)
 		eSimpleType st = type->simple_type;
 		assert(st != eVoid);
 		//assert((eType >= 0) && (eType <= MAX_SIMPLE_TYPES));
-		if (pure_rnd_flipcoin(50)) {
+//		if (pure_rnd_flipcoin(50)) {
+        if (false) {
 			ERROR_GUARD("");
 			int num = 0;
 			if (pure_rnd_flipcoin(50)) {
@@ -412,11 +548,11 @@ GenerateRandomConstant(const Type* type)
 			case eShort:     v = GenerateRandomShortConstant();		break;
 			case eLong:      v = GenerateRandomLongConstant();		break;
 			case eLongLong:  v = GenerateRandomLongLongConstant();		break;
-			case eUChar:     v = GenerateRandomCharConstant();		break;
-			case eUInt:      v = GenerateRandomIntConstant();		break;
-			case eUShort:    v = GenerateRandomShortConstant();		break;
-			case eULong:     v = GenerateRandomLongConstant();		break;
-			case eULongLong: v = GenerateRandomLongLongConstant();		break;
+			case eUChar:     v = GenerateRandomUCharConstant();		break;
+			case eUInt:      v = GenerateRandomUIntConstant();		break;
+			case eUShort:    v = GenerateRandomUShortConstant();		break;
+			case eULong:     v = GenerateRandomULongConstant();		break;
+			case eULongLong: v = GenerateRandomULongLongConstant();		break;
 			case eFloat:     v = GenerateRandomFloatHexConstant();		break;
 			case eInt128:    v = GenerateRandomInt128Constant();		break;
 			case eUInt128:   v = GenerateRandomInt128Constant();		break;

@@ -766,7 +766,8 @@ Variable::Output(std::ostream &out) const
 		out << "ACCESS_ONCE(" << get_actual_name() << ")";
 	}
 	else {
-		out << get_actual_name();
+        std::string actualname = get_actual_name();;
+		out << actualname;
 	}
 }
 

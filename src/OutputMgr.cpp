@@ -127,14 +127,14 @@ OutputMgr::OutputMain(std::ostream &out)
 	}
 	else {
 		// set up a global variable that controls if we print the hash value after computing it for each global
-		out << "    int print_hash_value = 0;" << endl;
+//		out << "    int print_hash_value = 0;" << endl;
 		if (CGOptions::accept_argc()) {
 			out << "    if (argc == 2 && strcmp(argv[1], \"1\") == 0) print_hash_value = 1;" << endl;
 		}
 
-		out << "    platform_main_begin();" << endl;
+//		out << "    platform_main_begin();" << endl;
 		if (CGOptions::compute_hash()) {
-			out << "    crc32_gentab();" << endl;
+//			out << "    crc32_gentab();" << endl;
 		}
 
 		ExtensionMgr::OutputFirstFunInvocation(out, invoke);
@@ -154,9 +154,9 @@ OutputMgr::OutputMain(std::ostream &out)
 		else
 			HashGlobalVariables(out);
 		if (CGOptions::compute_hash()) {
-			out << "    platform_main_end(crc32_context ^ 0xFFFFFFFFUL, print_hash_value);" << endl;
+//			out << "    platform_main_end(crc32_context ^ 0xFFFFFFFFUL, print_hash_value);" << endl;
 		} else {
-			out << "    platform_main_end(0,0);" << endl;
+//			out << "    platform_main_end(0,0);" << endl;
 		}
 	}
 	ExtensionMgr::OutputTail(out);
@@ -284,11 +284,11 @@ OutputMgr::OutputHeader(int argc, char *argv[], unsigned long seed)
 		out << endl;
 	}
 
-	if (!CGOptions::longlong()) {
-		out << endl;
-		out << "#define NO_LONGLONG" << std::endl;
-		out << endl;
-	}
+//	if (!CGOptions::longlong()) {
+//		out << endl;
+//		out << "#define NO_LONGLONG" << std::endl;
+//		out << endl;
+//	}
 	if (CGOptions::enable_float()) {
 		out << "#include <float.h>\n";
 		out << "#include <math.h>\n";
@@ -296,7 +296,7 @@ OutputMgr::OutputHeader(int argc, char *argv[], unsigned long seed)
 
 	ExtensionMgr::OutputHeader(out);
 
-	out << runtime_include << endl;
+//	out << runtime_include << endl;
 
  	if (!CGOptions::compute_hash()) {
 		if (CGOptions::allow_int64())

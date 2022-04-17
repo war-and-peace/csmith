@@ -200,25 +200,29 @@ void
 DefaultOutputMgr::Output()
 {
 	std::ostream &out = get_main_out();
-	if (is_split()) {
-		OutputGlobals();
-		OutputAllHeaders();
-		RandomOutputDefs();
-	}
-	else {
-		OutputStructUnionDeclarations(out);
-		OutputGlobalVariables(out);
-		OutputForwardDeclarations(out);
-		OutputFunctions(out);
-	}
-	if (CGOptions::step_hash_by_stmt()) {
-		OutputMgr::OutputHashFuncDef(out);
-		OutputMgr::OutputStepHashFuncDef(out);
-	}
+    std::stringstream ss;
+    OutputFunc1Body(ss);
+    out << "int main()\n{\n" << ss.str() << "}\n";
 
-	if (!CGOptions::nomain())
-		OutputMain(out);
-	OutputTail(out);
+//	if (is_split()) {
+//		OutputGlobals();
+//		OutputAllHeaders();
+//		RandomOutputDefs();
+//	}
+//	else {
+//		OutputStructUnionDeclarations(out);
+//		OutputGlobalVariables(out);
+//		OutputForwardDeclarations(out);
+//		OutputFunctions(out);
+//	}
+//	if (CGOptions::step_hash_by_stmt()) {
+//		OutputMgr::OutputHashFuncDef(out);
+//		OutputMgr::OutputStepHashFuncDef(out);
+//	}
+//
+//	if (!CGOptions::nomain())
+//		OutputMain(out);
+//	OutputTail(out);
 }
 
 std::ostream &

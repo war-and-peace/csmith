@@ -195,22 +195,28 @@ Expression::make_random(CGContext &cg_context, const Type* type, const CVQualifi
 
 	ERROR_GUARD(NULL);
 
+    std::string ttype = "";
 	switch (tt) {
 	case eConstant:
+        ttype = "constant";
 		if (type->eType == eSimple)
 			assert(type->simple_type != eVoid);
 		e = Constant::make_random(type);
 		break;
 	case eVariable:
+        ttype = "variable";
 		e = ExpressionVariable::make_random(cg_context, type, qfer);
 		break;
 	case eFunction:
+        ttype = "function";
 		e = ExpressionFuncall::make_random(cg_context, type, qfer);
 		break;
 	case eAssignment:
+        ttype = "assignment";
 		e = ExpressionAssign::make_random(cg_context, type, qfer);
 		break;
 	case eCommaExpr:
+        ttype = "comma";
 		e = ExpressionComma::make_random(cg_context, type, qfer);
 		break;
 	default: break;
@@ -220,6 +226,11 @@ Expression::make_random(CGContext &cg_context, const Type* type, const CVQualifi
 		assert(e->effect.is_side_effect_free());
 	}
 #endif
+
+//    e->get_type().Output(std::cerr);
+    std::cerr << ttype << "   ";
+    e->Output(std::cerr);
+    std::cerr << std::endl;
 
 	// increment expression depth. A function call increase the depth by 1
 	if (e->term_type == eConstant || e->term_type == eVariable ||

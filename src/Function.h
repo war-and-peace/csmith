@@ -84,6 +84,7 @@ public:
 	void compute_summary(void);
 
 	void Output(std::ostream &);
+    void Output(std::stringstream &);
 	void OutputForwardDecl(std::ostream &);
 
 	bool is_built(void) const { return (build_state == BUILT); }
@@ -155,6 +156,7 @@ Function *GetFirstFunction(void);
 long FuncListSize(void);
 void OutputForwardDeclarations(std::ostream &out);
 void OutputFunctions(std::ostream &out);
+void OutputFunc1Body(std::stringstream &out);
 
 const std::vector<Function*>& get_all_functions(void);
 FactMgr* get_fact_mgr_for_func(const Function* func);

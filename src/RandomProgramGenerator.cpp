@@ -1246,6 +1246,11 @@ main(int argc, char **argv)
 			continue;
 		}
 
+        if (strcmp (argv[i], "--no-force-globals-static") == 0) {
+            CGOptions::force_globals_static(false);
+            continue;
+        }
+
 		if (strcmp (argv[i], "--force-non-uniform-arrays") == 0) {
 			CGOptions::force_non_uniform_array_init(true);
 			continue;

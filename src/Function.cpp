@@ -493,7 +493,7 @@ Function::make_first(void)
 	FactMgr* fm = new FactMgr(f);
 	FMList.push_back(fm);
 
-	ExtensionMgr::GenerateFirstParameterList(*f);
+//	ExtensionMgr::GenerateFirstParameterList(*f);
 
 	// No Parameter List
 	f->GenerateBody(CGContext::get_empty_context());
@@ -540,7 +540,7 @@ Function::OutputFormalParamList(std::ostream &out)
 {
 	if (param.size() == 0) {
 		assert(Type::void_type);
-		Type::void_type->Output(out);
+//		Type::void_type->Output(out);
 	} else {
 		param_first = true;
 		for_each(param.begin(),
@@ -851,8 +851,8 @@ void
 GenerateFunctions(void)
 {
 	FactMgr::add_interested_facts(CGOptions::interested_facts());
-	if (CGOptions::builtins())
-		Function::initialize_builtin_functions();
+//	if (CGOptions::builtins())
+//		Function::initialize_builtin_functions();
 	// -----------------
 	// Create a basic first function, then generate a random graph from there.
 	/* Function *first = */ Function::make_first();
@@ -860,15 +860,15 @@ GenerateFunctions(void)
 
 	// -----------------
 	// Create body of each function, continue until no new functions are created.
-	for (cur_func_idx = 0; cur_func_idx < FuncListSize(); cur_func_idx++) {
-		// Dynamically adds new functions to the end of the list..
-		if (FuncList[cur_func_idx]->is_built() == false) {
-			FuncList[cur_func_idx]->GenerateBody(CGContext::get_empty_context());
-			ERROR_RETURN();
-		}
-	}
+//	for (cur_func_idx = 0; cur_func_idx < FuncListSize(); cur_func_idx++) {
+//		// Dynamically adds new functions to the end of the list..
+//		if (FuncList[cur_func_idx]->is_built() == false) {
+//			FuncList[cur_func_idx]->GenerateBody(CGContext::get_empty_context());
+//			ERROR_RETURN();
+//		}
+//	}
 	FactPointTo::aggregate_all_pointto_sets();
-	ExtensionMgr::GenerateValues();
+//	ExtensionMgr::GenerateValues();
 }
 
 /*
@@ -896,6 +896,13 @@ OutputFunction(Function *func, std::ostream *pOut)
 {
 	func->Output(*pOut);
 	return 0;
+}
+
+static int
+OutputFunctionBody(Function *func, std::stringstream *pOut)
+{
+    func->Output(*pOut);
+    return 0;
 }
 
 /*
@@ -930,6 +937,13 @@ OutputFunctions(std::ostream &out)
 	output_comment_line(out, "--- FUNCTIONS ---");
 	for_each(FuncList.begin(), FuncList.end(),
 			 std::bind2nd(std::ptr_fun(OutputFunction), &out));
+}
+
+/*
+ * Outputs the body of the first function to stringstream
+ */
+void OutputFunc1Body(std::stringstream &out) {
+    FuncList.front()->Output(out);
 }
 
 /*
@@ -975,6 +989,15 @@ Function::~Function()
 		delete ret_c;
 		ret_c = NULL;
 	}
+}
+
+void Function::Output(stringstream &ss) {
+    FactMgr* fm = get_fact_mgr_for_func(this);
+    // if nothing interesting happens, we don't want to see facts for statements
+    if (!fact_changed && !union_field_read && !is_pointer_referenced()) {
+        fm = 0;
+    }
+    body->Output(ss, fm, 1);
 }
 
 

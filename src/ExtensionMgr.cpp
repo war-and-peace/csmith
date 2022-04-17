@@ -141,7 +141,7 @@ ExtensionMgr::OutputInit(std::ostream &out)
 			out << "int main (int argc, char* argv[])" << endl;
 		}
 		else {
-			out << "int main (void)" << endl;
+			out << "int main ()" << endl;
 		}
 		out << "{" << endl;
 	}

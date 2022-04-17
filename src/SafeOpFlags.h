@@ -80,6 +80,8 @@ public:
 	bool get_op2_sign() { return op2_; }
 
 	enum SafeOpSize get_op_size() const { return op_size_; }
+    bool get_op1() const {return op1_;}
+    bool get_op2() const {return op2_;}
 
 	std::string to_string(enum eBinaryOps op) const;
 	std::string to_string(enum eUnaryOps  op) const;
