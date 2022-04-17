@@ -271,17 +271,20 @@ Expression::make_random_param(CGContext &cg_context, const Type* type, const CVQ
 	// if a term type is provided, no need to choose random term type
 	if (tt == MAX_TERM_TYPES) {
 		VectorFilter filter(&Expression::paramTable_);
-		filter.add(eConstant);   // don't call functions with constant parameters because it is not interesting
-		if ((!CGOptions::return_structs() && type->eType == eStruct) ||
-			(!CGOptions::return_unions() && type->eType == eUnion)) {
-			filter.add(eFunction);
-		}
-		if (type->is_const_struct_union()) {
-			filter.add(eAssignment);
-		}
-		if (cg_context.expr_depth + 2 > CGOptions::max_expr_depth()) {
-			filter.add(eFunction).add(eAssignment).add(eCommaExpr);
-		}
+//		filter.add(eConstant);   // don't call functions with constant parameters because it is not interesting
+        filter.add(eFunction);
+        filter.add(eAssignment);
+        filter.add(eCommaExpr);
+//		if ((!CGOptions::return_structs() && type->eType == eStruct) ||
+//			(!CGOptions::return_unions() && type->eType == eUnion)) {
+//			filter.add(eFunction);
+//		}
+//		if (type->is_const_struct_union()) {
+//			filter.add(eAssignment);
+//		}
+//		if (cg_context.expr_depth + 2 > CGOptions::max_expr_depth()) {
+//			filter.add(eFunction).add(eAssignment).add(eCommaExpr);
+//		}
 		tt = ExpressionTypeProbability(&filter);
 	}
 
