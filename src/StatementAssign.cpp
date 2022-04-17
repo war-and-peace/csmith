@@ -530,7 +530,8 @@ StatementAssign::OutputAsExpr(std::ostream &out) const
 				expr.Output(out);
 			}
 			else {
-				output_op(out);
+                out << "=";
+//				output_op(out);
 				out << " ";
 				expr.Output(out);
 			}
