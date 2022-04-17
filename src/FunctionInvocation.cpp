@@ -78,14 +78,15 @@ using namespace std;
  * XXX
  */
 FunctionInvocation *
-FunctionInvocation::make_random(bool is_std_func,
+FunctionInvocation::make_random(std::uint32_t expId,
+                                bool is_std_func,
 				CGContext &cg_context,
 				const Type* type,
 				const CVQualifiers* qfer)
 {
 	FunctionInvocation *fi = 0;
 	// If we are looking for a program-defined function, try to find one.
-	if (!is_std_func) {
+	if (expId < 1 && !is_std_func) {
 		Function* callee = NULL;
         //TODO: Turn this on and add topological sorting
 //		if (pure_rnd_flipcoin(50)) {
@@ -112,9 +113,9 @@ FunctionInvocation::make_random(bool is_std_func,
 	if (fi == NULL) {
 		int rnd_flag = rnd_flipcoin(StdUnaryFuncProb);
 		if (rnd_flag) {
-			fi = make_random_unary(cg_context, type);
+			fi = make_random_unary(expId, cg_context, type);
 		} else {
-			fi = make_random_binary(cg_context, type);
+			fi = make_random_binary(expId, cg_context, type);
 		}
 	}
 	assert(fi != 0);
@@ -141,7 +142,7 @@ FunctionInvocation::make_random(Function *target,
  *
  */
 FunctionInvocation *
-FunctionInvocation::make_random_unary(CGContext &cg_context, const Type* type)
+FunctionInvocation::make_random_unary(std::uint32_t expId, CGContext &cg_context, const Type* type)
 {
 	DEPTH_GUARD_BY_TYPE_RETURN(dtFunctionInvocationRandomUnary, NULL);
 	assert(type);
@@ -158,7 +159,7 @@ FunctionInvocation::make_random_unary(CGContext &cg_context, const Type* type)
 
 	FunctionInvocation *fi = FunctionInvocationUnary::CreateFunctionInvocationUnary(cg_context, op, flags);
 
-	Expression *operand = Expression::make_random(cg_context, type);
+	Expression *operand = Expression::make_random(expId + 1, cg_context, type);
 	ERROR_GUARD_AND_DEL1(NULL, fi);
 
 	fi->param_value.push_back(operand);
@@ -169,7 +170,7 @@ FunctionInvocation::make_random_unary(CGContext &cg_context, const Type* type)
  *
  */
 FunctionInvocation *
-FunctionInvocation::make_random_binary(CGContext &cg_context, const Type* type)
+FunctionInvocation::make_random_binary(std::uint32_t expId, CGContext &cg_context, const Type* type)
 {
 	DEPTH_GUARD_BY_TYPE_RETURN(dtFunctionInvocationRandomBinary, NULL);
 	if (rnd_flipcoin(10) && Type::has_pointer_type()) {
@@ -200,7 +201,7 @@ FunctionInvocation::make_random_binary(CGContext &cg_context, const Type* type)
 		assert(!rhs_type->is_float() && "rhs_type is float!");
 	}
 
-	Expression *lhs = Expression::make_random(lhs_cg_context, lhs_type);
+	Expression *lhs = Expression::make_random(expId + 1, lhs_cg_context, lhs_type);
 	ERROR_GUARD_AND_DEL1(NULL, fi);
 	Expression *rhs = 0;
 
@@ -222,7 +223,7 @@ FunctionInvocation::make_random_binary(CGContext &cg_context, const Type* type)
 	// or if the LHS is pure (not merely side-effect-free),
 	// then we can generate the RHS under the original effect context.
 	if (IsOrderedStandardFunc(op)) { // || lhs_eff_accum.is_pure()) { TODO: need more thoughts on the purity issue.
-		rhs = Expression::make_random(cg_context, rhs_type);
+		rhs = Expression::make_random(expId + 1, cg_context, rhs_type);
 	}
 	else {
 		// Otherwise, the RHS must be generated under the combined effect
@@ -239,17 +240,17 @@ FunctionInvocation::make_random_binary(CGContext &cg_context, const Type* type)
 			if (!not_constant) {
 				rhs = Constant::make_random_upto(lhs_type->SizeInBytes() * 8);
 			} else {
-				rhs = Expression::make_random(rhs_cg_context, rhs_type, NULL, false, true, tt);
+				rhs = Expression::make_random(expId + 1, rhs_cg_context, rhs_type, NULL, false, true, tt);
 			}
 		}
 		else {
-			rhs = Expression::make_random(rhs_cg_context, rhs_type);
+			rhs = Expression::make_random(expId + 1, rhs_cg_context, rhs_type);
 			// avoid divide by zero or possible zero (reached by pointer comparison)
 			if ((op == eMod || op == eDiv) && (rhs->equals(0) || rhs->is_0_or_1()) &&
 				!lhs_type->is_float() && !rhs_type->is_float()) {
 				VectorFilter f;
 				f.add(eMod).add(eDiv).add(eLShift).add(eRShift);
-				op = (eBinaryOps)(rnd_upto(4, &f));
+				op = (eBinaryOps)(rnd_upto(4, &f)); //TODO: switch back to MAX_BINARY_OP
 				fi->set_operation(op);
 			}
 		}
@@ -304,7 +305,7 @@ FunctionInvocation::make_random_binary_ptr_comparison(CGContext &cg_context)
 	Effect lhs_eff_accum;
 	CGContext lhs_cg_context(cg_context, cg_context.get_effect_context(), &lhs_eff_accum);
 	lhs_cg_context.flags |= NO_DANGLING_PTR;
-	Expression *lhs = Expression::make_random(lhs_cg_context, type, 0, true);
+	Expression *lhs = Expression::make_random(2, lhs_cg_context, type, 0, true);
 	ERROR_GUARD_AND_DEL1(NULL, fi);
 	cg_context.merge_param_context(lhs_cg_context, true);
 
@@ -324,7 +325,7 @@ FunctionInvocation::make_random_binary_ptr_comparison(CGContext &cg_context)
 		// need to pass in NO_DANGLING_PTR flag
 		unsigned int old_flag = cg_context.flags;
 		cg_context.flags |= NO_DANGLING_PTR;
-		rhs = Expression::make_random(cg_context, type, 0, true, false, tt);
+		rhs = Expression::make_random(2, cg_context, type, 0, true, false, tt);
 		cg_context.flags = old_flag;
 	} else {
 		// Otherwise, the RHS must be generated under the combined effect
@@ -335,7 +336,7 @@ FunctionInvocation::make_random_binary_ptr_comparison(CGContext &cg_context)
 
 		CGContext rhs_cg_context(cg_context, rhs_eff_context, &rhs_eff_accum);
 		rhs_cg_context.flags |= NO_DANGLING_PTR;
-		rhs = Expression::make_random(rhs_cg_context, type, 0, true, false, tt);
+		rhs = Expression::make_random(2, rhs_cg_context, type, 0, true, false, tt);
 		cg_context.merge_param_context(rhs_cg_context, true);
 	}
 	ERROR_GUARD_AND_DEL2(NULL, fi, lhs);

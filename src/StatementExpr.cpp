@@ -52,7 +52,7 @@ using namespace std;
  *
  */
 StatementExpr *
-StatementExpr::make_random(CGContext &cg_context)
+StatementExpr::make_random(std::uint32_t expId, CGContext &cg_context)
 {
 	DEPTH_GUARD_BY_TYPE_RETURN(dtStatementExpr, NULL);
 	FunctionInvocation *invoke;
@@ -60,7 +60,7 @@ StatementExpr::make_random(CGContext &cg_context)
 	Effect pre_effect = cg_context.get_accum_effect();
 	FactMgr* fm = get_fact_mgr(&cg_context);
 	vector<const Fact*> facts_copy = fm->global_facts;
-	invoke = FunctionInvocation::make_random(false, cg_context, 0, 0);
+	invoke = FunctionInvocation::make_random(expId, false, cg_context, 0, 0);
 	ERROR_GUARD(NULL);
 	if (invoke->failed) {
 		cg_context.reset_effect_accum(pre_effect);

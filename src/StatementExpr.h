@@ -50,7 +50,7 @@ class StatementExpr : public Statement
 {
 public:
 	// Factory method.
-	static StatementExpr *make_random(CGContext &cg_context);
+	static StatementExpr *make_random(std::uint32_t expId, CGContext &cg_context);
 
 	StatementExpr(Block* b, const FunctionInvocation &e);
 	StatementExpr(const StatementExpr &se);
