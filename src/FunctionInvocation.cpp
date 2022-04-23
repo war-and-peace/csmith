@@ -250,7 +250,7 @@ FunctionInvocation::make_random_binary(std::uint32_t expId, CGContext &cg_contex
 				!lhs_type->is_float() && !rhs_type->is_float()) {
 				VectorFilter f;
 				f.add(eMod).add(eDiv).add(eLShift).add(eRShift);
-				op = (eBinaryOps)(rnd_upto(4, &f)); //TODO: switch back to MAX_BINARY_OP
+				op = (eBinaryOps)(rnd_upto(MAX_BINARY_OP, &f));
 				fi->set_operation(op);
 			}
 		}
