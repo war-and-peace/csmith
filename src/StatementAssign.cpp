@@ -100,9 +100,9 @@ StatementAssign::AssignOpsProbability(const Type* type)
 	}
 
 	VectorFilter filter(&assignOpsTable_);
-	if (type && type->is_signed()) {
-		filter.add(ePreIncr).add(ePreDecr).add(ePostIncr).add(ePostDecr);
-	}
+//	if (type && type->is_signed()) {
+//		filter.add(ePreIncr).add(ePreDecr).add(ePostIncr).add(ePostDecr);
+//	}
 
 	int value = rnd_upto(filter.get_max_prob(), &filter);
 	return (eAssignOps)(filter.lookup(value));

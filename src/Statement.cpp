@@ -291,7 +291,7 @@ Statement::make_random(CGContext &cg_context,
 		assert(!"unknown Statement type");
 		break;
 	case eAssign:
-		s = StatementAssign::make_random(cg_context);
+		s = StatementAssign::make_random(cg_context, get_int_type());
 		break;
 	case eBlock:
 		s = Block::make_random(cg_context);
