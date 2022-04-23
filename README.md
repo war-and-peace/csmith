@@ -22,7 +22,28 @@ mkdir build && cd build && cmake . && make
 
 After building the library, you can use this command to generate C-- code examples:
 ```
-./csmith -o output.c --concise --no-global-variables --no-arrays --no-safe-math --no-unions --no-structs --no-volatiles --no-pointers --max-funcs 3 --max-expr-complexity 2 --no-embedded-assigns --no-comma-operators --no-argc --no-builtins --no-pre-incr-operator --no-pre-decr-operator --no-post-incr-operator --no-post-decr-operator --no-longlong --no-unary-plus-operator --probability-configuration probs.txt --no-force-globals-static --max-funcs 1 --no-consts
+./csmith \
+    -o output.c \
+    --probability-configuration probs.txt \
+    --concise \
+    --no-global-variables \
+    --no-arrays \
+    --no-safe-math \
+    --no-unions \
+    --no-structs \
+    --no-volatiles \
+    --no-pointers \
+    --max-funcs 3 \
+    --max-expr-complexity 2 \
+    --no-embedded-assigns \
+    --no-comma-operators \
+    --no-argc \
+    --no-builtins \
+    --no-longlong \
+    --no-unary-plus-operator \
+    --no-force-globals-static \
+    --max-funcs 1 \
+    --no-consts
 ```
 
 The output will be written to `output.c` file.
